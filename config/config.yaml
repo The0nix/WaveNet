@@ -1,0 +1,64 @@
+common:
+  seed: 1337
+data:
+  root: "data/ljspeech"
+  sample_rate: 22050
+  train_size: 0.99
+preprocessing:
+  f_min: 0
+  f_max: 8000
+  win_length: 1024
+  hop_length: 256
+  n_fft: 1024
+  n_mels: 80
+  power: 1.0
+  clip_min_value: 1e-5
+  n_mu_law: 256
+  crop_size: 10000
+model:  # See WaveNet class in src/core/model.py for descriptions
+  checkpoint_path: ???  # Path to lightning checkpoint to continue training (ignores further parameters)
+  n_layers: 16
+  dilation_cycle: 8
+  conv_channels: 256
+optimizer:
+  lr: 1e-3
+training:
+  gpus: 1  # Number of gpus (not list of indices)
+  n_epochs: 1000
+  num_workers: 12
+  batch_size: 8
+  val_check_interval: 0.25
+wandb:
+  project: "Tamerlan-Tabolov-WaveNet"
+  log_freq: 3
+train_transforms:
+  - _target_: core.transforms.Squeeze
+  - _target_: core.transforms.MelSpectrogram
+    sample_rate: ${data.sample_rate}
+    f_min: ${preprocessing.f_min}
+    f_max: ${preprocessing.f_max}
+    n_fft: ${preprocessing.n_fft}
+    n_mels: ${preprocessing.n_mels}
+    win_length: ${preprocessing.win_length}
+    hop_length: ${preprocessing.hop_length}
+    clip_min_value: ${preprocessing.clip_min_value}
+    power: ${preprocessing.power}
+  - _target_: core.transforms.LogTransform
+inference_transforms:
+  - _target_: core.transforms.Squeeze
+  - _target_: core.transforms.MelSpectrogram
+    sample_rate: ${data.sample_rate}
+    f_min: ${preprocessing.f_min}
+    f_max: ${preprocessing.f_max}
+    n_fft: ${preprocessing.n_fft}
+    n_mels: ${preprocessing.n_mels}
+    win_length: ${preprocessing.win_length}
+    hop_length: ${preprocessing.hop_length}
+    clip_min_value: ${preprocessing.clip_min_value}
+    power: ${preprocessing.power}
+  - _target_: core.transforms.LogTransform
+inference:
+  device: "cuda"
+  checkpoint_path: "./last.ckpt"
+  spectrogram_path: ???
+  inferenced_path: "inferenced"  # Path to dir with inferenced files

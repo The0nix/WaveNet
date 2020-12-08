@@ -1,0 +1,10 @@
+outputs/
+*/outputs/
+inferenced/
+wandb/
+files/
+config/
+data/
+*.ckpt
+*.wav
+*.pt
