@@ -5,7 +5,7 @@ Implementation of [WaveNet](https://arxiv.org/pdf/1609.03499.pdf) vocoder in PyT
 ## Usage
 
 ### Setup
-To launch and inference in nvidia-docker container follow these instructions:
+To launch training and inference in nvidia-docker container follow these instructions:
 
 0. Install [nvidia-docker](https://github.com/NVIDIA/nvidia-docker)
 1. Run `./docker-build.sh`
@@ -30,7 +30,7 @@ Where:
 * `spectrogram.pt`is a path to .pt file with spectrogram. Can be produced with `./docker-audio-to-spec.sh`
 * `device` is the device to inference on: either 'cpu', 'cuda' or cuda device number
 
-resulted audio will be located in `inferenced` folder
+Resulted audio will be located in `inferenced` folder
 
 ### Audio to spectrogram transformer
 To transform audio to spectrogram you can use the following command:
