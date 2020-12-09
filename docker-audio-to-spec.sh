@@ -1,7 +1,6 @@
 set -e
 tmp_dir=$(mktemp -d -t inference-XXXXXXXXXX)
-cp $1 $tmp_dir  # Copy model into temp for docker
-cp $2 $tmp_dir  # Copy spectrogram
+cp $1 $tmp_dir  # Copy audio
 
 docker run \
 	-it \
@@ -16,8 +15,6 @@ docker run \
 	--volume $tmp_dir:/home/user/inference_files \
 	wavenet-tamerlan-tabolov \
 	bash -c "
-    python ./src/inference.py \
-    inference.checkpoint_path=inference_files/$(basename $1) \
-    inference.spectrogram_path=inference_files/$(basename $2) \
-    inference.device=$3 \
+    python ./src/audio_to_spec.py \
+    audio_to_spec.audio_path=inference_files/$(basename $1) \
 	" || rm -rf $tmp_dir

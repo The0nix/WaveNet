@@ -1,3 +1,4 @@
+import math
 from typing import Sequence, List, Tuple, Optional
 
 import einops as eos
@@ -89,6 +90,7 @@ class WaveNet(pl.LightningModule):
         self.save_hyperparameters()
         self.n_mu_law = n_mu_law
         self.optimizer_lr = optimizer_lr
+        self.receptive_field = 2 ** dilation_cycle * math.ceil(n_layers / dilation_cycle)
 
         self.melspec_upsampler = nn.ConvTranspose1d(n_mels, conv_channels, kernel_size=n_fft + 1, padding=n_fft // 2,
                                                     stride=hop_length, output_padding=hop_length - 1)
@@ -146,11 +148,11 @@ class WaveNet(pl.LightningModule):
         cur_waveform = torch.zeros([bs, 1, 1], device=self.device)
         while cur_waveform.shape[2] < spectrogram.shape[2]:
             print(f"{cur_waveform.shape[2]}/{spectrogram.shape[2]}")
-            input_waveform = self.input_conv(cur_waveform)
+            input_waveform = self.input_conv(cur_waveform[:, :, -self.receptive_field:])
             cur_result = torch.zeros_like(input_waveform, device=self.device)
             prev = input_waveform
             for block in self.residual_blocks:
-                block_result = block(prev, spectrogram[:, :, :prev.shape[2]])
+                block_result = block(prev, spectrogram[:, :, max(0, cur_waveform.shape[2] -self.receptive_field):cur_waveform.shape[2]])
                 cur_result += block_result
                 block_result += prev
                 prev = block_result

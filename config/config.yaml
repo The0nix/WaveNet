@@ -1,7 +1,7 @@
 common:
   seed: 1337
 data:
-  root: "data/ljspeech"
+  root: "data"
   sample_rate: 22050
   train_size: 0.99
 preprocessing:
@@ -60,5 +60,9 @@ inference_transforms:
 inference:
   device: "cuda"
   checkpoint_path: "./last.ckpt"
-  spectrogram_path: ???
+  spectrogram_path: ???  # Path to input spectrogram with .pt extension. Can be produced with audio_to_spec.py or torch.save
   inferenced_path: "inferenced"  # Path to dir with inferenced files
+  cut_size: null # size of cut in seconds
+audio_to_spec:
+  audio_path: ???
+  output_path: "inferenced"

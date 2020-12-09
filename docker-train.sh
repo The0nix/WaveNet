@@ -5,7 +5,7 @@ docker run \
 	--shm-size=8g \
 	--cpuset-cpus=0-11 \
 	--gpus '"device=0"' \
-	--volume /street/data:/home/user/data \
+	--volume $(pwd)/data:/home/user/data \
 	--volume $(pwd)/config:/home/user/config \
 	--volume $(pwd)/outputs:/home/user/outputs \
 	--volume $tmp_dir:/home/user/files \
