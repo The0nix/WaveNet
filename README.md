@@ -1,7 +1,7 @@
-# Tacotron 2
+# WaveNet
 Implementation of [WaveNet](https://arxiv.org/pdf/1609.03499.pdf) vocoder in PyTorch
 
-<!--
+
 ## Usage
 
 ### Setup
@@ -16,27 +16,32 @@ To launch training follow these instructions:
 1. Set preferred configurations in `config/config.yaml` in particular you might want to set dataset path (it will be concatendated with data path in `docker-train.sh`)
 2. In `docker-run.sh` change `memory`, `memory-swap`, `shm-size`, `cpuset-cpus`, `gpus`, and data `volume` to desired values
 3. Set WANDB_API_KEY environment variable to your wandb key
-4. Run `./docker-train.sh waveglow_model_path`
-
-Where:
-* `waveglow_model_path` is a path to waveglow .pt model file. It can be downloaded [here](https://drive.google.com/file/d/1rpK8CzAAirq9sWZhe9nlfvxMF1dRgFbF/view) (Link from https://github.com/NVIDIA/waveglow)
+4. Run `./docker-train.sh`
 
 All outputs including models will be saved to `outputs` dir.
 
 ### Inference
 To launch inference run the following command:
 ```
-./docker-inference.sh model_path label_encoder_path waveglow_model_path device input_text
+./docker-inference.sh checkpoint.ckpt spectrogram.pt device
 ```
 Where:
-* `model_path` is a path to .ckpt model file
-* `label_encoder_path` is a path to .pickle label encoder file. It is generated during training by `fut_label_encoder.py` script
-* `waveglow_model_path` is a path to waveglow .pt model file. It can be downloaded [here](https://drive.google.com/file/d/1rpK8CzAAirq9sWZhe9nlfvxMF1dRgFbF/view) (Link from https://github.com/NVIDIA/waveglow)
+* `checkpoint.ckpt` is a path to .ckpt model file
+* `spectrogram.pt`is a path to .pt file with spectrogram. Can be produced with `./docker-audio-to-spec.sh`
 * `device` is the device to inference on: either 'cpu', 'cuda' or cuda device number
-* `input_text` is an input text for TTS
 
-Predicted output wav and spectrogram will be saved in `inferenced` folder
+resulted audio will be located in `inferenced` folder
+
+### Audio to spectrogram transformer
+To transform audio to spectrogram you can use the following command:
+```
+./docker-audio-to-spec.sh audio_path
+```
+
+Where:
+* `audio_path` is a path to audio file
+
+Spectrogram will be saved to `inferenced` folder with `.pt` extension
 
 ## Pretrained models
-All pretrained files for inference (tacotron 2 checkpoint trained on LJSpeech, label encoder and waveglow checkpoint) can be downloaded [here](https://drive.google.com/drive/folders/1f9sqm9-8zU5Z4J7wLelLMHVRJmTiemmm?usp=sharing).
--->
+Pretrained model can be downloaded [here](https://drive.google.com/drive/folders/1PttatYjedJ8Qv4c5kdzcPNXwD6c3zIdH?usp=sharing).
